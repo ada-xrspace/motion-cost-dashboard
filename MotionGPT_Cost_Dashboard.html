@@ -72,6 +72,58 @@
             text-align: right;
             font-size: 1rem;
         }
+        /* Tooltip Base Styles */
+        .tooltip-label {
+            position: relative;
+            cursor: help;
+            display: inline-flex;
+            align-items: center;
+        }
+        .tooltip-trigger {
+            display: inline-block;
+            margin-left: 5px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #aaa;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            text-align: center;
+            line-height: 16px;
+            font-size: 12px;
+        }
+        .tooltip-text {
+            visibility: hidden;
+            width: 280px;
+            background-color: #555;
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 135%; 
+            left: 50%;
+            margin-left: -140px; /* Half of the width */
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-weight: normal; 
+            font-size: 0.9rem;
+        }
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+        .tooltip-label:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
         .results-table {
             width: 100%;
             margin-top: 20px;
@@ -82,10 +134,14 @@
             text-align: right;
             border-bottom: 1px solid #ddd;
         }
-        .results-table th {
+        .results-table th:first-child,
+        .results-table td:first-child {
             text-align: left;
+        }
+        .results-table th {
             background-color: #e8eaf6;
         }
+        .results-table .total .tooltip-label,
         .results-table .total td {
             font-weight: bold;
             font-size: 1.2rem;
@@ -109,14 +165,18 @@
             <div class="cost-block">
                 <h3>Global Settings</h3>
                 <div class="form-group">
-                    <label for="currency-selector">Display Currency</label>
+                    <label class="tooltip-label" for="currency-selector">Display Currency <span class="tooltip-trigger">?</span>
+                        <span class="tooltip-text">Select the currency for displaying the final cost estimates.</span>
+                    </label>
                     <select id="currency-selector">
                         <option value="USD" selected>US Dollar (USD)</option>
                         <option value="TWD">New Taiwan Dollar (TWD)</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="exchange_rate">Exchange Rate (1 USD to TWD)</label>
+                    <label class="tooltip-label" for="exchange_rate">Exchange Rate (1 USD to TWD) <span class="tooltip-trigger">?</span>
+                        <span class="tooltip-text">Set the conversion rate from US Dollars to New Taiwan Dollars for TWD display.</span>
+                    </label>
                     <input type="number" id="exchange_rate" value="32.00" step="0.01">
                 </div>
             </div>
@@ -124,23 +184,33 @@
             <div class="cost-block">
                 <h3>Block 1: AI Motion Generation (Monthly, USD)</h3>
                 <div class="form-group">
-                    <label for="gpu_training_runs">Monthly Model Trainings (runs)</label>
+                    <label class="tooltip-label" for="gpu_training_runs">Monthly Model Trainings (runs) <span class="tooltip-trigger">?</span>
+                        <span class="tooltip-text">Number of times the AI model is retrained or fine-tuned per month to improve quality.</span>
+                    </label>
                     <input type="number" id="gpu_training_runs" value="1">
                 </div>
                 <div class="form-group">
-                    <label for="gpu_training_cost">Cost per Training ($)</label>
+                    <label class="tooltip-label" for="gpu_training_cost">Cost per Training ($) <span class="tooltip-trigger">?</span>
+                        <span class="tooltip-text">The estimated cloud computing (GPU) cost for a single, complete model training cycle.</span>
+                    </label>
                     <input type="number" id="gpu_training_cost" value="300">
                 </div>
                 <div class="form-group">
-                    <label for="inference_items">Monthly Inferences (items)</label>
+                    <label class="tooltip-label" for="inference_items">Monthly Inferences (items) <span class="tooltip-trigger">?</span>
+                        <span class="tooltip-text">Total number of motions to be generated by the AI from video inputs each month.</span>
+                    </label>
                     <input type="number" id="inference_items" value="1000">
                 </div>
                  <div class="form-group">
-                    <label for="inference_cost_per_item">Cost per Inference ($)</label>
+                    <label class="tooltip-label" for="inference_cost_per_item">Cost per Inference ($) <span class="tooltip-trigger">?</span>
+                        <span class="tooltip-text">The estimated cloud computing (GPU) cost to convert one video into one motion file.</span>
+                    </label>
                     <input type="number" id="inference_cost_per_item" value="0.0415" step="0.0001">
                 </div>
                 <div class="form-group">
-                    <label for="video_service_cost">AI Video Service Monthly Fee ($)</label>
+                    <label class="tooltip-label" for="video_service_cost">AI Video Service Monthly Fee ($) <span class="tooltip-trigger">?</span>
+                        <span class="tooltip-text">Monthly subscription fee for the AI service used to generate source video clips.</span>
+                    </label>
                     <input type="number" id="video_service_cost" value="2000">
                 </div>
             </div>
@@ -148,11 +218,15 @@
             <div class="cost-block">
                 <h3>Block 2: Motion Asset Purchase (One-Time, USD)</h3>
                 <div class="form-group">
-                    <label for="dance_motion_cost">Dance Motion Library ($)</label>
+                    <label class="tooltip-label" for="dance_motion_cost">Dance Motion Library ($) <span class="tooltip-trigger">?</span>
+                        <span class="tooltip-text">One-time budget for purchasing pre-made dance motion assets to bootstrap the library.</span>
+                    </label>
                     <input type="number" id="dance_motion_cost" value="3000">
                 </div>
                 <div class="form-group">
-                    <label for="speech_motion_cost">Speech Motion Library ($)</label>
+                    <label class="tooltip-label" for="speech_motion_cost">Speech Motion Library ($) <span class="tooltip-trigger">?</span>
+                        <span class="tooltip-text">One-time budget for purchasing pre-made conversational motion assets.</span>
+                    </label>
                     <input type="number" id="speech_motion_cost" value="3000">
                 </div>
             </div>
@@ -160,19 +234,27 @@
             <div class="cost-block">
                 <h3>Block 3: Human Resources (Monthly, USD)</h3>
                  <div class="form-group">
-                    <label for="inhouse_staff_count">In-house Staff (people)</label>
+                    <label class="tooltip-label" for="inhouse_staff_count">In-house Staff (people) <span class="tooltip-trigger">?</span>
+                        <span class="tooltip-text">Number of full-time employees dedicated to correcting and refining AI-generated motions.</span>
+                    </label>
                     <input type="number" id="inhouse_staff_count" value="4">
                 </div>
                 <div class="form-group">
-                    <label for="inhouse_staff_salary">Avg. In-house Salary ($)</label>
+                    <label class="tooltip-label" for="inhouse_staff_salary">Avg. In-house Salary ($) <span class="tooltip-trigger">?</span>
+                        <span class="tooltip-text">The average monthly salary for one full-time in-house staff member.</span>
+                    </label>
                     <input type="number" id="inhouse_staff_salary" value="1200">
                 </div>
                  <div class="form-group">
-                    <label for="outsourced_staff_count">Outsourced Staff (people)</label>
+                    <label class="tooltip-label" for="outsourced_staff_count">Outsourced Staff (people) <span class="tooltip-trigger">?</span>
+                        <span class="tooltip-text">Number of external contractors or freelancers hired for motion correction tasks.</span>
+                    </label>
                     <input type="number" id="outsourced_staff_count" value="4">
                 </div>
                 <div class="form-group">
-                    <label for="outsourced_staff_rate">Avg. Outsourced Fee ($)</label>
+                    <label class="tooltip-label" for="outsourced_staff_rate">Avg. Outsourced Fee ($) <span class="tooltip-trigger">?</span>
+                        <span class="tooltip-text">The average monthly fee or retainer for one outsourced contractor.</span>
+                    </label>
                     <input type="number" id="outsourced_staff_rate" value="1200">
                 </div>
             </div>
@@ -192,20 +274,28 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Monthly Recurring Cost</td>
+                        <td>
+                            <label class="tooltip-label">Monthly Recurring Cost <span class="tooltip-trigger">?</span>
+                                <span class="tooltip-text">The ongoing operational costs (AI services and human resources) calculated on a per-month basis.</span>
+                            </label>
+                        </td>
                         <td id="total_monthly">0</td>
                     </tr>
                     <tr>
-                        <td>One-Time Cost</td>
+                        <td>
+                            <label class="tooltip-label">One-Time Cost <span class="tooltip-trigger">?</span>
+                                <span class="tooltip-text">The initial, non-recurring investment for purchasing motion asset libraries to bootstrap the project.</span>
+                            </label>
+                        </td>
                         <td id="total_onetime">0</td>
                     </tr>
                     <tr class="total">
-                        <td>2025 Q4 Estimated Cost</td>
+                        <td>
+                             <label class="tooltip-label">2025 Q4 Estimated Cost <span class="tooltip-trigger">?</span>
+                                <span class="tooltip-text">The total projected cost for the 4-month period of Q4 2025. Calculated as: (Monthly Recurring Cost × 4) + One-Time Cost.</span>
+                            </label>
+                        </td>
                         <td id="total_q4">0</td>
-                    </tr>
-                    <tr class="total" style="display: none;">
-                        <td>First Year Total Cost (incl. one-time)</td>
-                        <td id="total_yearly">0</td>
                     </tr>
                 </tbody>
             </table>
@@ -296,14 +386,12 @@
         // --- Calculate total costs (USD) ---
         const totalMonthlyRecurring_USD = monthlyCostBlock1_USD + monthlyCostBlock3_USD;
         const totalQ4_USD = (totalMonthlyRecurring_USD * 4) + onetimeCostBlock2_USD;
-        const totalYearly_USD = (totalMonthlyRecurring_USD * 12) + onetimeCostBlock2_USD;
         
         // --- Update numbers on the webpage (using the format function) ---
         document.getElementById('results_header').textContent = `Estimated Total Cost (${document.getElementById('currency-selector').value})`;
         document.getElementById('total_monthly').textContent = formatCurrency(totalMonthlyRecurring_USD);
         document.getElementById('total_onetime').textContent = formatCurrency(onetimeCostBlock2_USD);
         document.getElementById('total_q4').textContent = formatCurrency(totalQ4_USD);
-        document.getElementById('total_yearly').textContent = formatCurrency(totalYearly_USD);
 
         // --- Update chart data (based on 2025 Q4 costs, USD) ---
         const q4CostBlock1_USD = monthlyCostBlock1_USD * 4;
