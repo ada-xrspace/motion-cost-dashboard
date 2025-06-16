@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MotionGPT 2025 Q4 成本預估</title>
+    <title>MotionGPT 2025 Q4 Additional Cost Estimate</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
-            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             background-color: #f0f2f5;
             color: #333;
             margin: 0;
@@ -101,110 +101,110 @@
 <body>
 
 <div class="container">
-    <h1>MotionGPT 2025 Q4 額外成本預估</h1>
+    <h1>MotionGPT 2025 Q4 Additional Cost Estimate</h1>
     <div class="dashboard">
         <div class="input-section">
-            <h2>單位成本即時輸入</h2>
+            <h2>Live Cost Inputs</h2>
 
             <div class="cost-block">
-                <h3>全域設定</h3>
+                <h3>Global Settings</h3>
                 <div class="form-group">
-                    <label for="currency-selector">顯示幣別</label>
+                    <label for="currency-selector">Display Currency</label>
                     <select id="currency-selector">
-                        <option value="USD" selected>美元 (USD)</option>
-                        <option value="TWD">新台幣 (TWD)</option>
+                        <option value="USD" selected>US Dollar (USD)</option>
+                        <option value="TWD">New Taiwan Dollar (TWD)</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="exchange_rate">匯率 (1 USD to TWD)</label>
+                    <label for="exchange_rate">Exchange Rate (1 USD to TWD)</label>
                     <input type="number" id="exchange_rate" value="32.00" step="0.01">
                 </div>
             </div>
 
             <div class="cost-block">
-                <h3>區塊1: AI 動作生成 (每月, USD)</h3>
+                <h3>Block 1: AI Motion Generation (Monthly, USD)</h3>
                 <div class="form-group">
-                    <label for="gpu_training_runs">每月模型訓練次數 (次)</label>
+                    <label for="gpu_training_runs">Monthly Model Trainings (runs)</label>
                     <input type="number" id="gpu_training_runs" value="1">
                 </div>
                 <div class="form-group">
-                    <label for="gpu_training_cost">單次訓練成本 ($)</label>
+                    <label for="gpu_training_cost">Cost per Training ($)</label>
                     <input type="number" id="gpu_training_cost" value="300">
                 </div>
                 <div class="form-group">
-                    <label for="inference_items">每月推論數量 (個)</label>
+                    <label for="inference_items">Monthly Inferences (items)</label>
                     <input type="number" id="inference_items" value="1000">
                 </div>
                  <div class="form-group">
-                    <label for="inference_cost_per_item">單個推論成本 ($)</label>
+                    <label for="inference_cost_per_item">Cost per Inference ($)</label>
                     <input type="number" id="inference_cost_per_item" value="0.0415" step="0.0001">
                 </div>
                 <div class="form-group">
-                    <label for="video_service_cost">AI 影片生成服務月費 ($)</label>
+                    <label for="video_service_cost">AI Video Service Monthly Fee ($)</label>
                     <input type="number" id="video_service_cost" value="2000">
                 </div>
             </div>
 
             <div class="cost-block">
-                <h3>區塊2: 動作資產採購 (一次性, USD)</h3>
+                <h3>Block 2: Motion Asset Purchase (One-Time, USD)</h3>
                 <div class="form-group">
-                    <label for="dance_motion_cost">舞蹈動作庫採購 ($)</label>
+                    <label for="dance_motion_cost">Dance Motion Library ($)</label>
                     <input type="number" id="dance_motion_cost" value="3000">
                 </div>
                 <div class="form-group">
-                    <label for="speech_motion_cost">對話動作庫採購 ($)</label>
+                    <label for="speech_motion_cost">Speech Motion Library ($)</label>
                     <input type="number" id="speech_motion_cost" value="3000">
                 </div>
             </div>
 
             <div class="cost-block">
-                <h3>區塊3: 人力成本 (每月, USD)</h3>
+                <h3>Block 3: Human Resources (Monthly, USD)</h3>
                  <div class="form-group">
-                    <label for="inhouse_staff_count">內部人員數量 (人)</label>
+                    <label for="inhouse_staff_count">In-house Staff (people)</label>
                     <input type="number" id="inhouse_staff_count" value="4">
                 </div>
                 <div class="form-group">
-                    <label for="inhouse_staff_salary">內部人員平均月薪 ($)</label>
+                    <label for="inhouse_staff_salary">Avg. In-house Salary ($)</label>
                     <input type="number" id="inhouse_staff_salary" value="1200">
                 </div>
                  <div class="form-group">
-                    <label for="outsourced_staff_count">委外人員數量 (人)</label>
+                    <label for="outsourced_staff_count">Outsourced Staff (people)</label>
                     <input type="number" id="outsourced_staff_count" value="4">
                 </div>
                 <div class="form-group">
-                    <label for="outsourced_staff_rate">委外人員平均月費 ($)</label>
+                    <label for="outsourced_staff_rate">Avg. Outsourced Fee ($)</label>
                     <input type="number" id="outsourced_staff_rate" value="1200">
                 </div>
             </div>
         </div>
 
         <div class="output-section">
-            <h2>成本結構分析</h2>
+            <h2>Cost Structure Analysis</h2>
             <div id="chart-container">
                 <canvas id="costChart"></canvas>
             </div>
             <table class="results-table">
                 <thead>
                     <tr>
-                        <th>成本期間</th>
-                        <th id="results_header">預估總成本</th>
+                        <th>Cost Period</th>
+                        <th id="results_header">Estimated Total Cost</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>每月經常性成本</td>
+                        <td>Monthly Recurring Cost</td>
                         <td id="total_monthly">0</td>
                     </tr>
                     <tr>
-                        <td>一次性成本</td>
+                        <td>One-Time Cost</td>
                         <td id="total_onetime">0</td>
                     </tr>
                     <tr class="total">
-                        <td>2025 Q4 預估成本</td>
+                        <td>2025 Q4 Estimated Cost</td>
                         <td id="total_q4">0</td>
                     </tr>
                     <tr class="total" style="display: none;">
-                        <td>首年總成本 (含一次性)</td>
+                        <td>First Year Total Cost (incl. one-time)</td>
                         <td id="total_yearly">0</td>
                     </tr>
                 </tbody>
@@ -214,17 +214,17 @@
 </div>
 
 <script>
-    // 獲取所有輸入框和選擇框元素
+    // Get all input and select elements
     const inputs = document.querySelectorAll('input[type="number"], select');
 
-    // Chart.js 初始化
+    // Initialize Chart.js
     const ctx = document.getElementById('costChart').getContext('2d');
     const costChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['AI 動作生成', '動作資產採購', '人力成本'],
+            labels: ['AI Motion Generation', 'Motion Asset Purchase', 'Human Resources'],
             datasets: [{
-                label: '成本分佈',
+                label: 'Cost Distribution',
                 data: [0, 0, 0],
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.8)',
@@ -247,13 +247,13 @@
                 },
                 title: {
                     display: true,
-                    text: '2025 Q4 成本結構分佈 (USD)'
+                    text: '2025 Q4 Cost Structure (USD)'
                 }
             }
         }
     });
     
-    // 格式化貨幣的輔助函式
+    // Helper function to format currency
     function formatCurrency(valueInUSD) {
         const currency = document.getElementById('currency-selector').value;
         const exchangeRate = parseFloat(document.getElementById('exchange_rate').value) || 1;
@@ -270,60 +270,60 @@
 
 
     function calculateCosts() {
-        // --- 讀取輸入值 (所有計算均以USD為基礎) ---
-        // 區塊1
+        // --- Read input values (all calculations are based on USD) ---
+        // Block 1
         const gpuTrainingRuns = parseFloat(document.getElementById('gpu_training_runs').value) || 0;
         const gpuTrainingCost = parseFloat(document.getElementById('gpu_training_cost').value) || 0;
         const inferenceItems = parseFloat(document.getElementById('inference_items').value) || 0;
         const inferenceCostPerItem = parseFloat(document.getElementById('inference_cost_per_item').value) || 0;
         const videoServiceCost = parseFloat(document.getElementById('video_service_cost').value) || 0;
         
-        // 區塊2
+        // Block 2
         const danceMotionCost = parseFloat(document.getElementById('dance_motion_cost').value) || 0;
         const speechMotionCost = parseFloat(document.getElementById('speech_motion_cost').value) || 0;
 
-        // 區塊3
+        // Block 3
         const inhouseStaffCount = parseFloat(document.getElementById('inhouse_staff_count').value) || 0;
         const inhouseStaffSalary = parseFloat(document.getElementById('inhouse_staff_salary').value) || 0;
         const outsourcedStaffCount = parseFloat(document.getElementById('outsourced_staff_count').value) || 0;
         const outsourcedStaffRate = parseFloat(document.getElementById('outsourced_staff_rate').value) || 0;
 
-        // --- 計算各區塊每月成本 (USD) ---
+        // --- Calculate monthly costs per block (USD) ---
         const monthlyCostBlock1_USD = (gpuTrainingRuns * gpuTrainingCost) + (inferenceItems * inferenceCostPerItem) + videoServiceCost;
         const monthlyCostBlock3_USD = (inhouseStaffCount * inhouseStaffSalary) + (outsourcedStaffCount * outsourcedStaffRate);
         const onetimeCostBlock2_USD = danceMotionCost + speechMotionCost;
         
-        // --- 計算總成本 (USD) ---
+        // --- Calculate total costs (USD) ---
         const totalMonthlyRecurring_USD = monthlyCostBlock1_USD + monthlyCostBlock3_USD;
-        const totalQ4_USD = (totalMonthlyRecurring_USD * 4) + onetimeCostBlock2_USD; // <<-- 修改為4個月
+        const totalQ4_USD = (totalMonthlyRecurring_USD * 4) + onetimeCostBlock2_USD;
         const totalYearly_USD = (totalMonthlyRecurring_USD * 12) + onetimeCostBlock2_USD;
         
-        // --- 更新網頁上的數字 (使用格式化函式) ---
-        document.getElementById('results_header').textContent = `預估總成本 (${document.getElementById('currency-selector').value})`;
+        // --- Update numbers on the webpage (using the format function) ---
+        document.getElementById('results_header').textContent = `Estimated Total Cost (${document.getElementById('currency-selector').value})`;
         document.getElementById('total_monthly').textContent = formatCurrency(totalMonthlyRecurring_USD);
         document.getElementById('total_onetime').textContent = formatCurrency(onetimeCostBlock2_USD);
         document.getElementById('total_q4').textContent = formatCurrency(totalQ4_USD);
         document.getElementById('total_yearly').textContent = formatCurrency(totalYearly_USD);
 
-        // --- 更新圖表數據 (以 2025 Q4 成本為例, USD) ---
-        const q4CostBlock1_USD = monthlyCostBlock1_USD * 4; // <<-- 修改為4個月
-        const q4CostBlock3_USD = monthlyCostBlock3_USD * 4; // <<-- 修改為4個月
+        // --- Update chart data (based on 2025 Q4 costs, USD) ---
+        const q4CostBlock1_USD = monthlyCostBlock1_USD * 4;
+        const q4CostBlock3_USD = monthlyCostBlock3_USD * 4;
 
         costChart.data.datasets[0].data[0] = q4CostBlock1_USD;
         costChart.data.datasets[0].data[1] = onetimeCostBlock2_USD;
         costChart.data.datasets[0].data[2] = q4CostBlock3_USD;
         
-        // 更新圖表標題
-        costChart.options.plugins.title.text = `2025 Q4 成本結構分佈 (${document.getElementById('currency-selector').value})`; // <<-- 修改標題
+        // Update chart title
+        costChart.options.plugins.title.text = `2025 Q4 Cost Structure (${document.getElementById('currency-selector').value})`;
         costChart.update();
     }
 
-    // 為所有輸入框和選擇框添加事件監聽器
+    // Add event listeners to all input and select elements
     inputs.forEach(input => {
         input.addEventListener('input', calculateCosts);
     });
 
-    // 頁面載入時先計算一次
+    // Calculate once on page load
     window.addEventListener('load', calculateCosts);
 
 </script>
