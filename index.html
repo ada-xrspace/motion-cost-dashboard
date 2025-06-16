@@ -3,418 +3,314 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MotionGPT 2025 Q4 Additional Cost Estimate</title>
+    <title>MotionGPT Strategic Roadmap Simulator</title>
+    <!-- Chosen Palette: "Cool Blues and Warm Neutrals" -->
+    <!-- Application Structure Plan: The SPA has been redesigned to integrate live inputs directly into each quarterly phase card. This removes the top-level control panel in favor of localized controls, allowing for independent cost simulation for each phase. A main bar chart at the top visualizes the outputs from these localized controls, providing a dynamic comparative overview. This structure was chosen to give users maximum flexibility and precision in modeling the distinct financial characteristics of each project phase (e.g., POC vs. Scaling), making the simulation more powerful and realistic. -->
+    <!-- Visualization & Content Choices: 
+        - Localized Live Inputs (HTML Forms): Goal: Simulate. Method: Number inputs placed within each of the four phase-specific cards. Interaction: User changes values within a specific quarter's card. Justification: This is the core interactive change, enabling detailed, phase-by-phase "what-if" analysis instead of relying on a single baseline.
+        - Tooltips (HTML/CSS): Goal: Inform. Method: Hover-activated text boxes on both inputs and calculated results. Interaction: Hover over labels. Justification: Provides necessary context for each input and calculation logic.
+        - Comparative Bar Chart (Chart.js/Canvas): Goal: Compare. Method: A single, responsive bar chart at the top of the page. Interaction: Data updates in real-time based on changes in ANY of the quarterly input cards. Justification: Offers the most effective and immediate visual summary of the cost implications across all project phases.
+        - Dynamic Text Blocks (HTML/JS): Goal: Inform/Synthesize. Method: Four side-by-side cards containing both static text (objectives) and dynamic elements (inputs and calculated totals). Interaction: The total cost for each card updates live as its internal values are changed. Justification: Creates self-contained simulation modules for each project phase. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background-color: #f0f2f5;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            background: #fff;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        h1, h2 {
-            text-align: center;
-            color: #1a237e;
-        }
-        .dashboard {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 30px;
-        }
-        .input-section {
-            flex: 1;
-            min-width: 400px;
-        }
-        .output-section {
-            flex: 1;
-            min-width: 400px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .cost-block {
-            background-color: #f9f9f9;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-        .cost-block h3 {
-            margin-top: 0;
-            color: #3f51b5;
-            border-bottom: 2px solid #c5cae9;
-            padding-bottom: 10px;
-        }
-        .form-group {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        .form-group label {
-            font-weight: 600;
-            flex-basis: 60%;
-        }
-        .form-group input, .form-group select {
-            width: 100px;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            text-align: right;
-            font-size: 1rem;
-        }
-        /* Tooltip Base Styles */
-        .tooltip-label {
-            position: relative;
-            cursor: help;
-            display: inline-flex;
-            align-items: center;
-        }
-        .tooltip-trigger {
-            display: inline-block;
-            margin-left: 5px;
-            font-weight: bold;
-            color: #fff;
-            background-color: #aaa;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            text-align: center;
-            line-height: 16px;
-            font-size: 12px;
-        }
-        .tooltip-text {
-            visibility: hidden;
-            width: 280px;
-            background-color: #555;
-            color: #fff;
-            text-align: left;
-            border-radius: 6px;
-            padding: 10px;
-            position: absolute;
-            z-index: 1;
-            bottom: 135%; 
-            left: 50%;
-            margin-left: -140px; /* Half of the width */
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-weight: normal; 
-            font-size: 0.9rem;
-        }
-        .tooltip-text::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #555 transparent transparent transparent;
-        }
-        .tooltip-label:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
-        .results-table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-        }
-        .results-table th, .results-table td {
-            padding: 12px;
-            text-align: right;
-            border-bottom: 1px solid #ddd;
-        }
-        .results-table th:first-child,
-        .results-table td:first-child {
-            text-align: left;
-        }
-        .results-table th {
-            background-color: #e8eaf6;
-        }
-        .results-table .total .tooltip-label,
-        .results-table .total td {
-            font-weight: bold;
-            font-size: 1.2rem;
-            color: #d32f2f;
-        }
-        #chart-container {
-            width: 100%;
-            max-width: 450px;
-            margin-top: 20px;
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .tooltip-label { position: relative; cursor: help; display: inline-flex; align-items: center; }
+        .tooltip-trigger { display: inline-block; margin-left: 5px; font-weight: bold; color: #fff; background-color: #9ca3af; border-radius: 50%; width: 18px; height: 18px; text-align: center; line-height: 18px; font-size: 12px; flex-shrink: 0; }
+        .tooltip-text { visibility: hidden; width: 280px; background-color: #374151; color: #fff; text-align: left; border-radius: 6px; padding: 10px; position: absolute; z-index: 10; bottom: 135%; left: 50%; transform: translateX(-50%); opacity: 0; transition: opacity 0.3s; font-weight: normal; font-size: 0.9rem; pointer-events: none; }
+        .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #374151 transparent transparent transparent; }
+        .tooltip-label:hover .tooltip-text { visibility: visible; opacity: 1; }
+        .chart-container { position: relative; width: 100%; height: 350px; max-height: 50vh; max-width: 1100px; margin: 0 auto; }
+        @media (min-width: 1024px) { .chart-container { height: 400px; } }
+        .input-sm { width: 80px; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px; text-align: right; font-size: 0.9rem; }
+        .card-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+        @media (min-width: 1280px) { .card-grid { grid-template-columns: repeat(2, 1fr); } }
+        .input-area-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+        @media (min-width: 640px) { .input-area-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem;} }
+        .input-group { display: grid; grid-template-columns: auto 1fr; gap-x-3 gap-y-2; align-items: center; }
+        .input-group label { grid-column: 1 / 2; text-align: left; white-space: nowrap; }
+        .input-group input { grid-column: 2 / 3; justify-self: end; }
     </style>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-800">
 
-<div class="container">
-    <h1>MotionGPT 2025 Q4 Additional Cost Estimate</h1>
-    <div class="dashboard">
-        <div class="input-section">
-            <h2>Live Cost Inputs</h2>
-
-            <div class="cost-block">
-                <h3>Global Settings</h3>
-                <div class="form-group">
-                    <label class="tooltip-label" for="currency-selector">Display Currency <span class="tooltip-trigger">?</span>
-                        <span class="tooltip-text">Select the currency for displaying the final cost estimates.</span>
-                    </label>
-                    <select id="currency-selector">
-                        <option value="USD" selected>US Dollar (USD)</option>
-                        <option value="TWD">New Taiwan Dollar (TWD)</option>
-                    </select>
+    <div class="container mx-auto p-4 md:p-6 lg:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800">MotionGPT Strategic Roadmap Simulator</h1>
+            <p class="text-lg text-gray-600 mt-2">Interactively explore project costs from 2025 Q3 to 2026 Q2</p>
+        </header>
+        
+        <!-- Global Settings -->
+        <section class="bg-white p-4 rounded-2xl shadow-lg border border-gray-200 mb-10 max-w-lg mx-auto">
+             <h2 class="text-xl font-bold text-center mb-4 text-indigo-700">Global Settings</h2>
+             <div class="flex justify-around items-center">
+                 <div class="flex items-center gap-4">
+                    <label class="tooltip-label" for="currency-selector">Display Currency<span class="tooltip-trigger">?</span><span class="tooltip-text">Select the display currency for all cost estimates.</span></label>
+                    <select id="currency-selector" class="p-1 border rounded"><option value="USD">USD</option><option value="TWD">TWD</option></select>
                 </div>
-                <div class="form-group">
-                    <label class="tooltip-label" for="exchange_rate">Exchange Rate (1 USD to TWD) <span class="tooltip-trigger">?</span>
-                        <span class="tooltip-text">Set the conversion rate from US Dollars to New Taiwan Dollars for TWD display.</span>
-                    </label>
-                    <input type="number" id="exchange_rate" value="32.00" step="0.01">
+                 <div class="flex items-center gap-4">
+                    <label class="tooltip-label" for="exchange_rate">Exchange Rate<span class="tooltip-trigger">?</span><span class="tooltip-text">Conversion rate from 1 USD to TWD.</span></label>
+                    <input type="number" id="exchange_rate" value="32.00" step="0.01" class="w-24 p-1 border rounded text-right">
+                </div>
+             </div>
+        </section>
+
+        <!-- Roadmap Overview Section -->
+        <section>
+            <h2 class="text-2xl font-bold text-center mb-6 text-indigo-700">Roadmap Overview & Cost Projections</h2>
+            <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200 mb-8">
+                <div class="chart-container">
+                    <canvas id="roadmapChart"></canvas>
                 </div>
             </div>
 
-            <div class="cost-block">
-                <h3>Block 1: AI Motion Generation (Monthly, USD)</h3>
-                <div class="form-group">
-                    <label class="tooltip-label" for="gpu_training_runs">Monthly Model Trainings (runs) <span class="tooltip-trigger">?</span>
-                        <span class="tooltip-text">Number of times the AI model is retrained or fine-tuned per month to improve quality.</span>
-                    </label>
-                    <input type="number" id="gpu_training_runs" value="1">
-                </div>
-                <div class="form-group">
-                    <label class="tooltip-label" for="gpu_training_cost">Cost per Training ($) <span class="tooltip-trigger">?</span>
-                        <span class="tooltip-text">The estimated cloud computing (GPU) cost for a single, complete model training cycle.</span>
-                    </label>
-                    <input type="number" id="gpu_training_cost" value="300">
-                </div>
-                <div class="form-group">
-                    <label class="tooltip-label" for="inference_items">Monthly Inferences (items) <span class="tooltip-trigger">?</span>
-                        <span class="tooltip-text">Total number of motions to be generated by the AI from video inputs each month.</span>
-                    </label>
-                    <input type="number" id="inference_items" value="1000">
-                </div>
-                 <div class="form-group">
-                    <label class="tooltip-label" for="inference_cost_per_item">Cost per Inference ($) <span class="tooltip-trigger">?</span>
-                        <span class="tooltip-text">The estimated cloud computing (GPU) cost to convert one video into one motion file.</span>
-                    </label>
-                    <input type="number" id="inference_cost_per_item" value="0.0415" step="0.0001">
-                </div>
-                <div class="form-group">
-                    <label class="tooltip-label" for="video_service_cost">AI Video Service Monthly Fee ($) <span class="tooltip-trigger">?</span>
-                        <span class="tooltip-text">Monthly subscription fee for the AI service used to generate source video clips.</span>
-                    </label>
-                    <input type="number" id="video_service_cost" value="2000">
-                </div>
+            <div id="roadmap-cards-container" class="card-grid">
+                <!-- Quarterly Cards will be injected by JS -->
             </div>
+        </section>
 
-            <div class="cost-block">
-                <h3>Block 2: Motion Asset Purchase (One-Time, USD)</h3>
-                <div class="form-group">
-                    <label class="tooltip-label" for="dance_motion_cost">Dance Motion Library ($) <span class="tooltip-trigger">?</span>
-                        <span class="tooltip-text">One-time budget for purchasing pre-made dance motion assets to bootstrap the library.</span>
-                    </label>
-                    <input type="number" id="dance_motion_cost" value="3000">
-                </div>
-                <div class="form-group">
-                    <label class="tooltip-label" for="speech_motion_cost">Speech Motion Library ($) <span class="tooltip-trigger">?</span>
-                        <span class="tooltip-text">One-time budget for purchasing pre-made conversational motion assets.</span>
-                    </label>
-                    <input type="number" id="speech_motion_cost" value="3000">
-                </div>
-            </div>
-
-            <div class="cost-block">
-                <h3>Block 3: Human Resources (Monthly, USD)</h3>
-                 <div class="form-group">
-                    <label class="tooltip-label" for="inhouse_staff_count">In-house Staff (people) <span class="tooltip-trigger">?</span>
-                        <span class="tooltip-text">Number of full-time employees dedicated to correcting and refining AI-generated motions.</span>
-                    </label>
-                    <input type="number" id="inhouse_staff_count" value="4">
-                </div>
-                <div class="form-group">
-                    <label class="tooltip-label" for="inhouse_staff_salary">Avg. In-house Salary ($) <span class="tooltip-trigger">?</span>
-                        <span class="tooltip-text">The average monthly salary for one full-time in-house staff member.</span>
-                    </label>
-                    <input type="number" id="inhouse_staff_salary" value="2000">
-                </div>
-                 <div class="form-group">
-                    <label class="tooltip-label" for="outsourced_staff_count">Outsourced Staff (people) <span class="tooltip-trigger">?</span>
-                        <span class="tooltip-text">Number of external contractors or freelancers hired for motion correction tasks.</span>
-                    </label>
-                    <input type="number" id="outsourced_staff_count" value="4">
-                </div>
-                <div class="form-group">
-                    <label class="tooltip-label" for="outsourced_staff_rate">Avg. Outsourced Fee ($) <span class="tooltip-trigger">?</span>
-                        <span class="tooltip-text">The average monthly fee or retainer for one outsourced contractor.</span>
-                    </label>
-                    <input type="number" id="outsourced_staff_rate" value="2500">
-                </div>
-            </div>
-        </div>
-
-        <div class="output-section">
-            <h2>Cost Structure Analysis</h2>
-            <div id="chart-container">
-                <canvas id="costChart"></canvas>
-            </div>
-            <table class="results-table">
-                <thead>
-                    <tr>
-                        <th>Cost Period</th>
-                        <th id="results_header">Estimated Total Cost</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <label class="tooltip-label">Monthly Recurring Cost <span class="tooltip-trigger">?</span>
-                                <span class="tooltip-text">The ongoing operational costs (AI services and human resources) calculated on a per-month basis.</span>
-                            </label>
-                        </td>
-                        <td id="total_monthly">0</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label class="tooltip-label">One-Time Cost <span class="tooltip-trigger">?</span>
-                                <span class="tooltip-text">The initial, non-recurring investment for purchasing motion asset libraries to bootstrap the project.</span>
-                            </label>
-                        </td>
-                        <td id="total_onetime">0</td>
-                    </tr>
-                    <tr class="total">
-                        <td>
-                             <label class="tooltip-label">2025 Q4 Estimated Cost <span class="tooltip-trigger">?</span>
-                                <span class="tooltip-text">The total projected cost for the 4-month period of Q4 2025. Calculated as: (Monthly Recurring Cost × 4) + One-Time Cost.</span>
-                            </label>
-                        </td>
-                        <td id="total_q4">0</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <footer class="text-center mt-12 text-sm text-gray-500">
+            <p>&copy; 2025 MotionGPT Project Team. All rights reserved.</p>
+        </footer>
     </div>
-</div>
 
-<script>
-    // Get all input and select elements
-    const inputs = document.querySelectorAll('input[type="number"], select');
+    <script>
+        const roadmapCardsContainer = document.getElementById('roadmap-cards-container');
+        let roadmapChart;
 
-    // Initialize Chart.js
-    const ctx = document.getElementById('costChart').getContext('2d');
-    const costChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['AI Motion Generation', 'Motion Asset Purchase', 'Human Resources'],
-            datasets: [{
-                label: 'Cost Distribution',
-                data: [0, 0, 0],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.8)',
-                    'rgba(54, 162, 235, 0.8)',
-                    'rgba(255, 206, 86, 0.8)',
+        const roadmapData = {
+            '2025-q3': {
+                phase: 'Phase 1: Proof of Concept',
+                strategy: [
+                    "<strong>Focus:</strong> Validate the core technology pipeline at a small, manageable scale.",
+                    "<strong>Task:</strong> Involves focused R&D, establishing foundational workflows, and gathering initial data.",
+                    "<strong>Goal:</strong> Prove technical feasibility and understand resource needs before committing to larger investments."
                 ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
+                borderColor: 'border-blue-500',
+                defaults: {
+                    quarterlyInferences: 600, quarterlyTrainings: 0,
+                    costPerTraining: 300, costPerInference: 0.0415,
+                    monthlyVideoService: 500,
+                    inHouseCount: 1, inHouseSalary: 2000,
+                    outsourcedCount: 2, outsourcedSalary: 1200,
+                    oneTimeDance: 500, oneTimeSpeech: 500
+                }
+            },
+            '2025-q4': {
+                phase: 'Phase 2: Baseline Production',
+                strategy: [
+                    "<strong>Focus:</strong> Transition from R&D to a stable, full-scale operational workflow.",
+                    "<strong>Task:</strong> Establish a reliable production baseline, build a foundational motion library, and formalize the team structure.",
+                    "<strong>Goal:</strong> Achieve consistent, predictable output and prepare for future scaling."
                 ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                title: {
-                    display: true,
-                    text: '2025 Q4 Cost Structure (USD)'
+                borderColor: 'border-indigo-500',
+                defaults: {
+                    quarterlyInferences: 3000, quarterlyTrainings: 3,
+                    costPerTraining: 300, costPerInference: 0.0415,
+                    monthlyVideoService: 2000,
+                    inHouseCount: 4, inHouseSalary: 2000,
+                    outsourcedCount: 4, outsourcedSalary: 2500,
+                    oneTimeDance: 3000, oneTimeSpeech: 3000
+                }
+            },
+            '2026-q1': {
+                phase: 'Phase 3: Production Scaling',
+                strategy: [
+                    "<strong>Focus:</strong> Aggressively increase production throughput with a validated pipeline.",
+                    "<strong>Task:</strong> Invest in more AI capacity, expand the team, and accelerate the growth of the motion library.",
+                    "<strong>Goal:</strong> Build a comprehensive asset base and support a larger number of dependent projects."
+                ],
+                borderColor: 'border-purple-500',
+                defaults: {
+                    quarterlyInferences: 4500, quarterlyTrainings: 6,
+                    costPerTraining: 300, costPerInference: 0.0415,
+                    monthlyVideoService: 2600,
+                    inHouseCount: 5, inHouseSalary: 2100,
+                    outsourcedCount: 5, outsourcedSalary: 2600,
+                    oneTimeDance: 0, oneTimeSpeech: 0
+                }
+            },
+            '2026-q2': {
+                phase: 'Phase 4: Automation & Optimization',
+                strategy: [
+                    "<strong>Focus:</strong> Leverage mature AI models, trained on extensive data from prior quarters.",
+                    "<strong>Task:</strong> Shift investment from high-cost manual labor to more advanced automation, increasing AI-driven output.",
+                    "<strong>Goal:</strong> Reduce human intervention and lower the overall cost-per-motion, achieving higher efficiency."
+                ],
+                borderColor: 'border-green-500',
+                defaults: {
+                    quarterlyInferences: 7500, quarterlyTrainings: 6,
+                    costPerTraining: 300, costPerInference: 0.0415,
+                    monthlyVideoService: 3500,
+                    inHouseCount: 2, inHouseSalary: 2200,
+                    outsourcedCount: 1, outsourcedSalary: 2700,
+                    oneTimeDance: 0, oneTimeSpeech: 0
                 }
             }
+        };
+
+        function formatCurrency(value, currency, exchangeRate) {
+            const displayValue = currency === 'TWD' ? value * exchangeRate : value;
+            const locale = currency === 'TWD' ? 'zh-TW' : 'en-US';
+            return displayValue.toLocaleString(locale, { style: 'currency', currency, maximumFractionDigits: 0 });
         }
-    });
-    
-    // Helper function to format currency
-    function formatCurrency(valueInUSD) {
-        const currency = document.getElementById('currency-selector').value;
-        const exchangeRate = parseFloat(document.getElementById('exchange_rate').value) || 1;
         
-        const displayValue = currency === 'TWD' ? valueInUSD * exchangeRate : valueInUSD;
-        const locale = currency === 'TWD' ? 'zh-TW' : 'en-US';
+        function createCards() {
+            Object.keys(roadmapData).forEach(key => {
+                const data = roadmapData[key];
+                const d = data.defaults;
+                const card = document.createElement('div');
+                card.id = `card-${key}`;
+                card.className = `bg-white p-5 rounded-xl shadow-lg border-t-4 ${data.borderColor} flex flex-col`;
+                
+                const inputsHTML = `
+                    <div class="input-area-grid">
+                        <div class="space-y-4">
+                             <div>
+                                <h4 class="font-semibold text-gray-700 mb-2 border-b pb-1">Goals & Deliverables (Quarterly)</h4>
+                                <div class="input-grid text-sm">
+                                    <label class="tooltip-label" for="inferences-${key}">AI Motions<span class="tooltip-trigger">?</span><span class="tooltip-text">Quarterly goal for the number of AI-generated motions.</span></label><input type="number" id="inferences-${key}" value="${d.quarterlyInferences}" class="input-sm">
+                                    <label class="tooltip-label" for="trainings-${key}">Model Trainings<span class="tooltip-trigger">?</span><span class="tooltip-text">Quarterly goal for the number of model retraining runs.</span></label><input type="number" id="trainings-${key}" value="${d.quarterlyTrainings}" class="input-sm">
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-700 mb-2 border-b pb-1">One-Time Asset Purchase</h4>
+                                 <div class="input-grid text-sm">
+                                    <label class="tooltip-label" for="onetime_dance-${key}">Dance Library<span class="tooltip-trigger">?</span><span class="tooltip-text">One-time purchase of dance motion assets for this quarter.</span></label><input type="number" id="onetime_dance-${key}" value="${d.oneTimeDance}" class="input-sm">
+                                    <label class="tooltip-label" for="onetime_speech-${key}">Speech Library<span class="tooltip-trigger">?</span><span class="tooltip-text">One-time purchase of speech motion assets for this quarter.</span></label><input type="number" id="onetime_speech-${key}" value="${d.oneTimeSpeech}" class="input-sm">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                             <div>
+                                <h4 class="font-semibold text-gray-700 mb-2 border-b pb-1">AI & HR Unit Costs (Monthly)</h4>
+                                <div class="input-grid text-sm">
+                                    <label class="tooltip-label" for="video_service-${key}">Video Service<span class="tooltip-trigger">?</span><span class="tooltip-text">Monthly fee for the AI video generation service.</span></label><input type="number" id="video_service-${key}" value="${d.monthlyVideoService}" class="input-sm">
+                                    <label class="tooltip-label" for="training_cost-${key}">Cost/Training<span class="tooltip-trigger">?</span><span class="tooltip-text">GPU cost for a single training cycle.</span></label><input type="number" id="training_cost-${key}" value="${d.costPerTraining}" class="input-sm">
+                                    <label class="tooltip-label" for="inference_cost-${key}">Cost/Inference<span class="tooltip-trigger">?</span><span class="tooltip-text">GPU cost to generate one motion.</span></label><input type="number" id="inference_cost-${key}" value="${d.costPerInference}" step="0.0001" class="input-sm">
+                                    <label class="tooltip-label" for="inhouse_salary-${key}">In-house Salary<span class="tooltip-trigger">?</span><span class="tooltip-text">Average monthly salary per person.</span></label><input type="number" id="inhouse_salary-${key}" value="${d.inHouseSalary}" class="input-sm">
+                                    <label class="tooltip-label" for="outsourced_salary-${key}">Outsourced Fee<span class="tooltip-trigger">?</span><span class="tooltip-text">Average monthly fee per contractor.</span></label><input type="number" id="outsourced_salary-${key}" value="${d.outsourcedSalary}" class="input-sm">
+                                </div>
+                            </div>
+                             <div>
+                                <h4 class="font-semibold text-gray-700 mb-2 border-b pb-1">HR Headcount (Monthly)</h4>
+                                <div class="input-grid text-sm">
+                                    <label class="tooltip-label" for="inhouse_count-${key}">In-house Staff<span class="tooltip-trigger">?</span><span class="tooltip-text">Number of full-time employees.</span></label><input type="number" id="inhouse_count-${key}" value="${d.inHouseCount}" class="input-sm">
+                                    <label class="tooltip-label" for="outsourced_count-${key}">Outsourced Staff<span class="tooltip-trigger">?</span><span class="tooltip-text">Number of external contractors.</span></label><input type="number" id="outsourced_count-${key}" value="${d.outsourcedCount}" class="input-sm">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                card.innerHTML = `
+                    <div class="flex flex-col h-full">
+                        <div class="mb-4">
+                            <h3 class="text-xl font-bold text-gray-800">${data.phase}</h3>
+                            <ul class="text-sm text-gray-600 mt-2 list-disc list-inside space-y-1">
+                                ${data.strategy.map(item => `<li>${item}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="flex-grow mb-4 bg-gray-50 p-4 rounded-lg border">
+                            ${inputsHTML}
+                        </div>
+                        <div class="mt-auto pt-4 border-t bg-indigo-50 text-center rounded-b-lg -m-5 mt-5 p-5">
+                            <div class="tooltip-label justify-center text-sm text-gray-600">
+                                Total Estimated Cost
+                                <span class="tooltip-trigger">?</span>
+                                <span class="tooltip-text">The total projected cost for this quarter based on the inputs above. Calculated as: (Sum of all Monthly Costs × 3) + One-Time Costs.</span>
+                            </div>
+                            <p id="total-${key}" class="text-2xl font-bold text-indigo-600">$0</p>
+                        </div>
+                    </div>
+                `;
+                roadmapCardsContainer.appendChild(card);
+            });
+        }
+
+        function calculateAndRender() {
+            const currency = document.getElementById('currency-selector').value;
+            const exchangeRate = parseFloat(document.getElementById('exchange_rate').value) || 1;
+            const costs = {};
+
+            Object.keys(roadmapData).forEach(key => {
+                const oneTimeDance = parseFloat(document.getElementById(`onetime_dance-${key}`).value) || 0;
+                const oneTimeSpeech = parseFloat(document.getElementById(`onetime_speech-${key}`).value) || 0;
+                const quarterlyTrainings = parseFloat(document.getElementById(`trainings-${key}`).value) || 0;
+                const costPerTraining = parseFloat(document.getElementById(`training_cost-${key}`).value) || 0;
+                const quarterlyInferences = parseFloat(document.getElementById(`inferences-${key}`).value) || 0;
+                const costPerInference = parseFloat(document.getElementById(`inference_cost-${key}`).value) || 0;
+                const monthlyVideoService = parseFloat(document.getElementById(`video_service-${key}`).value) || 0;
+                const inHouseCount = parseFloat(document.getElementById(`inhouse_count-${key}`).value) || 0;
+                const inHouseSalary = parseFloat(document.getElementById(`inhouse_salary-${key}`).value) || 0;
+                const outsourcedCount = parseFloat(document.getElementById(`outsourced_count-${key}`).value) || 0;
+                const outsourcedSalary = parseFloat(document.getElementById(`outsourced_salary-${key}`).value) || 0;
+
+                const oneTimeTotal = oneTimeDance + oneTimeSpeech;
+                const quarterlyAITotal = (quarterlyTrainings * costPerTraining) + (quarterlyInferences * costPerInference) + (monthlyVideoService * 3);
+                const quarterlyHRTotal = ((inHouseCount * inHouseSalary) + (outsourcedCount * outsourcedSalary)) * 3;
+                
+                const quarterTotal = quarterlyAITotal + quarterlyHRTotal + oneTimeTotal;
+                
+                costs[key] = quarterTotal;
+                document.getElementById(`total-${key}`).textContent = formatCurrency(quarterTotal, currency, exchangeRate);
+            });
+            
+            updateChart(costs);
+        }
+
+        function createChart() {
+            const ctx = document.getElementById('roadmapChart').getContext('2d');
+            const labels = Object.keys(roadmapData).map(id => `${id.split('-')[0]} Q${id.split('-')[1].charAt(1)}`);
+            
+            roadmapChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Total Estimated Cost',
+                        data: [],
+                        backgroundColor: ['#60a5fa', '#818cf8', '#c084fc', '#4ade80'],
+                        borderColor: ['#2563eb', '#4f46e5', '#7e22ce', '#16a34a'],
+                        borderWidth: 2,
+                        borderRadius: 5,
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false, responsive: true,
+                    scales: { y: { beginAtZero: true, ticks: { callback: v => '$' + (v / 1000) + 'k' } } },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const rawValue = context.raw;
+                                    const currency = document.getElementById('currency-selector').value;
+                                    const exchangeRate = parseFloat(document.getElementById('exchange_rate').value) || 1;
+                                    return `Total: ${formatCurrency(rawValue, currency, exchangeRate)}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
         
-        return displayValue.toLocaleString(locale, {
-            style: 'currency',
-            currency: currency,
-            maximumFractionDigits: 0
+        function updateChart(costs) {
+            roadmapChart.data.datasets[0].data = Object.values(costs);
+            roadmapChart.update();
+        }
+        
+        window.addEventListener('load', () => {
+            createCards();
+            createChart();
+            calculateAndRender();
+            
+            const allInputs = document.querySelectorAll('#roadmap-cards-container input, #currency-selector, #exchange_rate');
+            allInputs.forEach(input => input.addEventListener('input', calculateAndRender));
         });
-    }
-
-
-    function calculateCosts() {
-        // --- Read input values (all calculations are based on USD) ---
-        // Block 1
-        const gpuTrainingRuns = parseFloat(document.getElementById('gpu_training_runs').value) || 0;
-        const gpuTrainingCost = parseFloat(document.getElementById('gpu_training_cost').value) || 0;
-        const inferenceItems = parseFloat(document.getElementById('inference_items').value) || 0;
-        const inferenceCostPerItem = parseFloat(document.getElementById('inference_cost_per_item').value) || 0;
-        const videoServiceCost = parseFloat(document.getElementById('video_service_cost').value) || 0;
-        
-        // Block 2
-        const danceMotionCost = parseFloat(document.getElementById('dance_motion_cost').value) || 0;
-        const speechMotionCost = parseFloat(document.getElementById('speech_motion_cost').value) || 0;
-
-        // Block 3
-        const inhouseStaffCount = parseFloat(document.getElementById('inhouse_staff_count').value) || 0;
-        const inhouseStaffSalary = parseFloat(document.getElementById('inhouse_staff_salary').value) || 0;
-        const outsourcedStaffCount = parseFloat(document.getElementById('outsourced_staff_count').value) || 0;
-        const outsourcedStaffRate = parseFloat(document.getElementById('outsourced_staff_rate').value) || 0;
-
-        // --- Calculate monthly costs per block (USD) ---
-        const monthlyCostBlock1_USD = (gpuTrainingRuns * gpuTrainingCost) + (inferenceItems * inferenceCostPerItem) + videoServiceCost;
-        const monthlyCostBlock3_USD = (inhouseStaffCount * inhouseStaffSalary) + (outsourcedStaffCount * outsourcedStaffRate);
-        const onetimeCostBlock2_USD = danceMotionCost + speechMotionCost;
-        
-        // --- Calculate total costs (USD) ---
-        const totalMonthlyRecurring_USD = monthlyCostBlock1_USD + monthlyCostBlock3_USD;
-        const totalQ4_USD = (totalMonthlyRecurring_USD * 4) + onetimeCostBlock2_USD;
-        
-        // --- Update numbers on the webpage (using the format function) ---
-        document.getElementById('results_header').textContent = `Estimated Total Cost (${document.getElementById('currency-selector').value})`;
-        document.getElementById('total_monthly').textContent = formatCurrency(totalMonthlyRecurring_USD);
-        document.getElementById('total_onetime').textContent = formatCurrency(onetimeCostBlock2_USD);
-        document.getElementById('total_q4').textContent = formatCurrency(totalQ4_USD);
-
-        // --- Update chart data (based on 2025 Q4 costs, USD) ---
-        const q4CostBlock1_USD = monthlyCostBlock1_USD * 4;
-        const q4CostBlock3_USD = monthlyCostBlock3_USD * 4;
-
-        costChart.data.datasets[0].data[0] = q4CostBlock1_USD;
-        costChart.data.datasets[0].data[1] = onetimeCostBlock2_USD;
-        costChart.data.datasets[0].data[2] = q4CostBlock3_USD;
-        
-        // Update chart title
-        costChart.options.plugins.title.text = `2025 Q4 Cost Structure (${document.getElementById('currency-selector').value})`;
-        costChart.update();
-    }
-
-    // Add event listeners to all input and select elements
-    inputs.forEach(input => {
-        input.addEventListener('input', calculateCosts);
-    });
-
-    // Calculate once on page load
-    window.addEventListener('load', calculateCosts);
-
-</script>
-
+    </script>
 </body>
 </html>
