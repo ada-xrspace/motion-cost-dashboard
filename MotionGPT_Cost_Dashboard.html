@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotionGPT 2025 Q4 成本預估</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #1a237e;
+        }
+        .dashboard {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        .input-section {
+            flex: 1;
+            min-width: 400px;
+        }
+        .output-section {
+            flex: 1;
+            min-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .cost-block {
+            background-color: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .cost-block h3 {
+            margin-top: 0;
+            color: #3f51b5;
+            border-bottom: 2px solid #c5cae9;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .form-group label {
+            font-weight: 600;
+            flex-basis: 60%;
+        }
+        .form-group input, .form-group select {
+            width: 100px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: right;
+            font-size: 1rem;
+        }
+        .results-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        .results-table th, .results-table td {
+            padding: 12px;
+            text-align: right;
+            border-bottom: 1px solid #ddd;
+        }
+        .results-table th {
+            text-align: left;
+            background-color: #e8eaf6;
+        }
+        .results-table .total td {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #d32f2f;
+        }
+        #chart-container {
+            width: 100%;
+            max-width: 450px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>MotionGPT 2025 Q4 額外成本預估</h1>
+    <div class="dashboard">
+        <div class="input-section">
+            <h2>單位成本即時輸入</h2>
+
+            <div class="cost-block">
+                <h3>全域設定</h3>
+                <div class="form-group">
+                    <label for="currency-selector">顯示幣別</label>
+                    <select id="currency-selector">
+                        <option value="USD" selected>美元 (USD)</option>
+                        <option value="TWD">新台幣 (TWD)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="exchange_rate">匯率 (1 USD to TWD)</label>
+                    <input type="number" id="exchange_rate" value="32.00" step="0.01">
+                </div>
+            </div>
+
+            <div class="cost-block">
+                <h3>區塊1: AI 動作生成 (每月, USD)</h3>
+                <div class="form-group">
+                    <label for="gpu_training_runs">每月模型訓練次數 (次)</label>
+                    <input type="number" id="gpu_training_runs" value="1">
+                </div>
+                <div class="form-group">
+                    <label for="gpu_training_cost">單次訓練成本 ($)</label>
+                    <input type="number" id="gpu_training_cost" value="300">
+                </div>
+                <div class="form-group">
+                    <label for="inference_items">每月推論數量 (個)</label>
+                    <input type="number" id="inference_items" value="1000">
+                </div>
+                 <div class="form-group">
+                    <label for="inference_cost_per_item">單個推論成本 ($)</label>
+                    <input type="number" id="inference_cost_per_item" value="0.0415" step="0.0001">
+                </div>
+                <div class="form-group">
+                    <label for="video_service_cost">AI 影片生成服務月費 ($)</label>
+                    <input type="number" id="video_service_cost" value="2000">
+                </div>
+            </div>
+
+            <div class="cost-block">
+                <h3>區塊2: 動作資產採購 (一次性, USD)</h3>
+                <div class="form-group">
+                    <label for="dance_motion_cost">舞蹈動作庫採購 ($)</label>
+                    <input type="number" id="dance_motion_cost" value="3000">
+                </div>
+                <div class="form-group">
+                    <label for="speech_motion_cost">對話動作庫採購 ($)</label>
+                    <input type="number" id="speech_motion_cost" value="3000">
+                </div>
+            </div>
+
+            <div class="cost-block">
+                <h3>區塊3: 人力成本 (每月, USD)</h3>
+                 <div class="form-group">
+                    <label for="inhouse_staff_count">內部人員數量 (人)</label>
+                    <input type="number" id="inhouse_staff_count" value="4">
+                </div>
+                <div class="form-group">
+                    <label for="inhouse_staff_salary">內部人員平均月薪 ($)</label>
+                    <input type="number" id="inhouse_staff_salary" value="1200">
+                </div>
+                 <div class="form-group">
+                    <label for="outsourced_staff_count">委外人員數量 (人)</label>
+                    <input type="number" id="outsourced_staff_count" value="4">
+                </div>
+                <div class="form-group">
+                    <label for="outsourced_staff_rate">委外人員平均月費 ($)</label>
+                    <input type="number" id="outsourced_staff_rate" value="1200">
+                </div>
+            </div>
+        </div>
+
+        <div class="output-section">
+            <h2>成本結構分析</h2>
+            <div id="chart-container">
+                <canvas id="costChart"></canvas>
+            </div>
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>成本期間</th>
+                        <th id="results_header">預估總成本</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>每月經常性成本</td>
+                        <td id="total_monthly">0</td>
+                    </tr>
+                    <tr>
+                        <td>一次性成本</td>
+                        <td id="total_onetime">0</td>
+                    </tr>
+                    <tr class="total">
+                        <td>2025 Q4 預估成本</td>
+                        <td id="total_q4">0</td>
+                    </tr>
+                    <tr class="total" style="display: none;">
+                        <td>首年總成本 (含一次性)</td>
+                        <td id="total_yearly">0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 獲取所有輸入框和選擇框元素
+    const inputs = document.querySelectorAll('input[type="number"], select');
+
+    // Chart.js 初始化
+    const ctx = document.getElementById('costChart').getContext('2d');
+    const costChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['AI 動作生成', '動作資產採購', '人力成本'],
+            datasets: [{
+                label: '成本分佈',
+                data: [0, 0, 0],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.8)',
+                    'rgba(54, 162, 235, 0.8)',
+                    'rgba(255, 206, 86, 0.8)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: '2025 Q4 成本結構分佈 (USD)'
+                }
+            }
+        }
+    });
+    
+    // 格式化貨幣的輔助函式
+    function formatCurrency(valueInUSD) {
+        const currency = document.getElementById('currency-selector').value;
+        const exchangeRate = parseFloat(document.getElementById('exchange_rate').value) || 1;
+        
+        const displayValue = currency === 'TWD' ? valueInUSD * exchangeRate : valueInUSD;
+        const locale = currency === 'TWD' ? 'zh-TW' : 'en-US';
+        
+        return displayValue.toLocaleString(locale, {
+            style: 'currency',
+            currency: currency,
+            maximumFractionDigits: 0
+        });
+    }
+
+
+    function calculateCosts() {
+        // --- 讀取輸入值 (所有計算均以USD為基礎) ---
+        // 區塊1
+        const gpuTrainingRuns = parseFloat(document.getElementById('gpu_training_runs').value) || 0;
+        const gpuTrainingCost = parseFloat(document.getElementById('gpu_training_cost').value) || 0;
+        const inferenceItems = parseFloat(document.getElementById('inference_items').value) || 0;
+        const inferenceCostPerItem = parseFloat(document.getElementById('inference_cost_per_item').value) || 0;
+        const videoServiceCost = parseFloat(document.getElementById('video_service_cost').value) || 0;
+        
+        // 區塊2
+        const danceMotionCost = parseFloat(document.getElementById('dance_motion_cost').value) || 0;
+        const speechMotionCost = parseFloat(document.getElementById('speech_motion_cost').value) || 0;
+
+        // 區塊3
+        const inhouseStaffCount = parseFloat(document.getElementById('inhouse_staff_count').value) || 0;
+        const inhouseStaffSalary = parseFloat(document.getElementById('inhouse_staff_salary').value) || 0;
+        const outsourcedStaffCount = parseFloat(document.getElementById('outsourced_staff_count').value) || 0;
+        const outsourcedStaffRate = parseFloat(document.getElementById('outsourced_staff_rate').value) || 0;
+
+        // --- 計算各區塊每月成本 (USD) ---
+        const monthlyCostBlock1_USD = (gpuTrainingRuns * gpuTrainingCost) + (inferenceItems * inferenceCostPerItem) + videoServiceCost;
+        const monthlyCostBlock3_USD = (inhouseStaffCount * inhouseStaffSalary) + (outsourcedStaffCount * outsourcedStaffRate);
+        const onetimeCostBlock2_USD = danceMotionCost + speechMotionCost;
+        
+        // --- 計算總成本 (USD) ---
+        const totalMonthlyRecurring_USD = monthlyCostBlock1_USD + monthlyCostBlock3_USD;
+        const totalQ4_USD = (totalMonthlyRecurring_USD * 4) + onetimeCostBlock2_USD; // <<-- 修改為4個月
+        const totalYearly_USD = (totalMonthlyRecurring_USD * 12) + onetimeCostBlock2_USD;
+        
+        // --- 更新網頁上的數字 (使用格式化函式) ---
+        document.getElementById('results_header').textContent = `預估總成本 (${document.getElementById('currency-selector').value})`;
+        document.getElementById('total_monthly').textContent = formatCurrency(totalMonthlyRecurring_USD);
+        document.getElementById('total_onetime').textContent = formatCurrency(onetimeCostBlock2_USD);
+        document.getElementById('total_q4').textContent = formatCurrency(totalQ4_USD);
+        document.getElementById('total_yearly').textContent = formatCurrency(totalYearly_USD);
+
+        // --- 更新圖表數據 (以 2025 Q4 成本為例, USD) ---
+        const q4CostBlock1_USD = monthlyCostBlock1_USD * 4; // <<-- 修改為4個月
+        const q4CostBlock3_USD = monthlyCostBlock3_USD * 4; // <<-- 修改為4個月
+
+        costChart.data.datasets[0].data[0] = q4CostBlock1_USD;
+        costChart.data.datasets[0].data[1] = onetimeCostBlock2_USD;
+        costChart.data.datasets[0].data[2] = q4CostBlock3_USD;
+        
+        // 更新圖表標題
+        costChart.options.plugins.title.text = `2025 Q4 成本結構分佈 (${document.getElementById('currency-selector').value})`; // <<-- 修改標題
+        costChart.update();
+    }
+
+    // 為所有輸入框和選擇框添加事件監聽器
+    inputs.forEach(input => {
+        input.addEventListener('input', calculateCosts);
+    });
+
+    // 頁面載入時先計算一次
+    window.addEventListener('load', calculateCosts);
+
+</script>
+
+</body>
+</html>
